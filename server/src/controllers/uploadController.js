@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+import path from "path";
 import pdfService from "../services/pdfService.js";
 import ocrService from "../services/ocrService.js";
 
@@ -6,18 +8,20 @@ export const handleFileUpload = async (req, res) => {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  const { mimetype, buffer } = req.file;
+  const { mimetype, path: filePath } = req.file;
 
   try {
     let text = "";
 
     if (mimetype === "application/pdf") {
-      text = await pdfService.extractText(buffer);
+      text = await pdfService.extractText(filePath);
     } else if (mimetype.startsWith("image/")) {
-      text = await ocrService.extractText(buffer);
+      text = await ocrService.extractText(filePath);
     } else {
       return res.status(400).json({ error: "Unsupported file type" });
     }
+
+    await fs.unlink(filePath).catch(() => {});
 
     return res.json({ text });
   } catch (error) {

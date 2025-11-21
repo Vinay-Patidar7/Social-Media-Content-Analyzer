@@ -1,8 +1,8 @@
 import Tesseract from "tesseract.js";
 
-const extractText = async (buffer) => {
-  const { data } = await Tesseract.recognize(buffer, "eng", {
-    logger: () => {}, // silence logs
+const extractText = async (filePath) => {
+  const { data } = await Tesseract.recognize(filePath, "eng", {
+    logger: () => {},
   });
   return data.text || "";
 };

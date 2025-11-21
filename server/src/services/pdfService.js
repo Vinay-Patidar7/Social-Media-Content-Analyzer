@@ -1,8 +1,11 @@
 import pdfParse from "pdf-parse";
 
-const extractText = async (buffer) => {
-  // buffer is a Node.js Buffer from Multer memoryStorage
-  const data = await pdfParse(buffer);
+const extractText = async (filePath) => {
+  const dataBuffer = await import("fs").then(({ default: fs }) =>
+    fs.readFileSync(filePath)
+  );
+  const data = await pdfParse(dataBuffer);
+  // data.text already contains extracted text
   return data.text || "";
 };
 
