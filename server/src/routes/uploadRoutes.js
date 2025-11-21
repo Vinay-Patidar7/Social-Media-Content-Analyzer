@@ -1,26 +1,11 @@
 import express from "express";
 import multer from "multer";
-import path from "path";
-import { fileURLToPath } from "url";
 import { handleFileUpload } from "../controllers/uploadController.js";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
-    cb(null, path.join(__dirname, "../../uploads"));
-  },
-  filename: (_, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const base = path.basename(file.originalname, ext);
-    const timestamp = Date.now();
-    cb(null, `${base}-${timestamp}${ext}`);
-  },
-});
+// Use memory storage instead of saving to /uploads folder
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
